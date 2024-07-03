@@ -1,7 +1,7 @@
 const becrypt = require("bcryptjs");
 const express = require("express");
-const UserModel = require("../models/UserModel");
-const { generateAccessToken, generateRefreshToken } = require("../services/tokenService");
+const UserModel = require("../../models/UserModel");
+const { generateAccessToken, generateRefreshToken } = require("../../services/tokenService");
 const loginController = express.Router();
 
 const loginHandler = async (req, res, next) => {

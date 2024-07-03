@@ -16,7 +16,20 @@ const signupStep1ValidationMiddleware = [
     },
 ];
 
+const otpRequestValidationMiddleware = [
+    body("phone").isMobilePhone().withMessage("Invalid phone number"),
+    body("email").isEmail().withMessage("Invalid email number"),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            let message = Array(errors).join(",");
+            return res.status(400).json({ message });
+        }
+        next();
+    },
+];
 
 module.exports = {
     signupStep1ValidationMiddleware,
+    otpRequestValidationMiddleware
 };

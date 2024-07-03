@@ -1,7 +1,7 @@
 const becrypt = require("bcryptjs");
 const express = require("express");
-const UserModel = require("../models/UserModel");
-const generateAndSendOTP = require("../services/otpService");
+const UserModel = require("../../models/UserModel");
+const generateAndSendOtp = require("../../services/otpService");
 const ForgotPasswordSessionModel = require("../models/ForgotPasswordSessionModel");
 const forgotPasswordController = express.Router();
 
@@ -10,7 +10,7 @@ const generateOtpHandler = async (req, res, next) => {
     try {
         const user = await UserModel.findOne({ where: { email } });
         if (!user) return res.status(404).json({ message: "Invalid Email" });
-        let otp = generateAndSendOTP(user);
+        let otp = generateAndSendOtp(user);
         const session = await ForgotPasswordSessionModel.create({ otp, email });
 
         res.status(201).json({ message: "Otp sent!", sessionId: session.id });

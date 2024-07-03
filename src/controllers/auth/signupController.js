@@ -1,18 +1,18 @@
 const express = require("express");
 const { Op } = require("@sequelize/core");
-const SignupSessionModel = require("../models/SignupSessionModel");
-const generateAndSendOTP = require("../services/otpService");
-const UserModel = require("../models/UserModel");
+const SignupSessionModel = require("../../models/Auth/SignupSessionModel")
+const generateAndSendOtp = require("../../services/otpService");
+const UserModel = require("../../models/UserModel");
 const becrypt = require("bcryptjs");
 const {
     signupStep1ValidationMiddleware,
-} = require("../middlewares/validationMiddleware");
+} = require("../../middlewares/validationMiddleware");
 const {
     generateAccessToken,
     generateRefreshToken,
     verifyAccessToken,
-} = require("../services/tokenService");
-const authMiddleware = require("../middlewares/authMiddleware");
+} = require("../../services/tokenService");
+const { authMiddleware }  = require("../../middlewares/authMiddleware");
 
 const signupController = express.Router();
 
@@ -51,7 +51,7 @@ const signupStep1Handler = async (req, res, next) => {
             password,
         });
 
-        const otp = generateAndSendOTP(phone, email);
+        const otp = generateAndSendOtp(phone, email);
         session.otp = otp;
 
         await session.save();

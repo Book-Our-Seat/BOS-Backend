@@ -1,8 +1,9 @@
-const { DataTypes } = require("@sequelize/core");
-const sequelize = require("../../config/sequelizeConfig");
-const { v4: uuidv4 } = require('uuid');
+const { Model, DataTypes } = require("@sequelize/core");
+const sequelize = require("../../../config/sequelizeConfig");
+const { v4: uuidv4 } = require("uuid");
 
-const UserModel = sequelize.define("User", {
+//TODO: use session instead!
+const SignupSessionModel = sequelize.define("signupsession", {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
@@ -25,13 +26,14 @@ const UserModel = sequelize.define("User", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    address: {
+    otp: {
         type: DataTypes.STRING,
+        allowNull: true,
     },
-    role: {
-        type: DataTypes.ENUM(['admin', 'user']), //TODO: Add a command to create admin user in db.
-        defaultValue: 'user'
-    }
+    isValid: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+    },
 });
 
-module.exports = UserModel;
+module.exports = SignupSessionModel;

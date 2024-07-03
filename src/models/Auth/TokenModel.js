@@ -1,5 +1,5 @@
 const { DataTypes } = require("@sequelize/core");
-const sequelize = require("../../config/sequelizeConfig");
+const sequelize = require("../../../config/sequelizeConfig");
 
 const TokenModel = sequelize.define("Token", {
     token: {
