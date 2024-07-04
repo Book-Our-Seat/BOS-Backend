@@ -40,4 +40,5 @@ const EventModel = sequelize.define("eventmodel", {
 });
 
 
+
 module.exports = EventModel;

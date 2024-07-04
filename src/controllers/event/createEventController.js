@@ -1,8 +1,10 @@
 const EventModel = require("../../models/Event/EventModel");
 const { v4: uuidv4 } = require("uuid");
 const ShowModel = require("../../models/Event/ShowModel");
+const sequelize = require("../../../config/sequelizeConfig");
+const VenueModel = require("../../models/Event/VenueModel");
 
-const createEventController = async (req, res, next) => {
+const createEventHandler = async (req, res, next) => {
     const {
         title,
         description,
@@ -14,37 +16,68 @@ const createEventController = async (req, res, next) => {
         shows,
     } = req.body;
 
-    const transaction = await sequelize.transaction();
+    sequelize.transaction(async (transaction) => {
+        try {
+            let event = await EventModel.create(
+                {
+                    title,
+                    description,
+                    artistName,
+                    duration,
+                    ageLimit,
+                    posterLink,
+                    category,
+                },
+                { transaction }
+            );
+            let showsParsed = shows.map((show) => {
+                console.log({
+                    id: uuidv4(),
+                    venueId: show.venueId,
+                    eventId: event.id,
+                    startTime: show.startTime,
+                    date: show.date,
+                });
+                return {
+                    id: uuidv4(),
+                    venueId: show.venueId,
+                    eventId: event.id,
+                    startTime: show.startTime,
+                    date: show.date,
+                };
+            });
+            await ShowModel.bulkCreate(showsParsed, { transaction });
+            res.status(201).json({ message: "Event created successfully" });
+        } catch (error) {
+            console.log(error);
+            await transaction.rollback();
+            next(error);
+        }
+    });
+};
 
+const getEventHandler = async (req, res, next) => {
     try {
-        let event = await EventModel.create(
-            {
-                title,
-                description,
-                artistName,
-                duration,
-                ageLimit,
-                posterLink,
-                category,
-            },
-            { transaction }
-        );
-        let showsParsed = shows.map((show) => {
-            return {
-                id: uuidv4(),
-                venueId: show.venueId,
-                eventId: event.id,
-                startTime: show.startTime,
-                date: show.date,
-            };
+        let events = await EventModel.findAll({
+            include: [
+                {
+                    model: ShowModel,
+                    attributes: ["id", "startTime", "date"],
+                    separate: true,
+                    include: [
+                        {
+                            model: VenueModel,
+                            as: "venue",
+                            attributes: ["name"],
+                        },
+                    ],
+                },
+            ],
         });
-        console.log(`::shows: ${showsParsed}`);
-        await ShowModel.bulkCreate(showsParsed, { transaction });
-        await transaction.commit();
+        res.status(200).json({ events });
     } catch (error) {
-        await transaction.rollback();
         next(error);
     }
 };
 
-module.exports = createEventController;
+module.exports = { createEventHandler, getEventHandler };

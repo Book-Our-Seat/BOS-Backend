@@ -2,7 +2,6 @@ const express = require("express");
 const UserModel = require("../../models/UserModel");
 const { generateAccessToken } = require("../../services/tokenService");
 const TokenModel = require("../../models/Auth/TokenModel");
-const tokenController = express.Router();
 
 const accessTokenHandler = async (req, res, next) => {
     const { token } = req.body;
@@ -26,6 +25,6 @@ const accessTokenHandler = async (req, res, next) => {
     }
 };
 
-tokenController.post("/access-token", accessTokenHandler);
 
-module.exports = tokenController;
+
+module.exports = accessTokenHandler;

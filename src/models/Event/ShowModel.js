@@ -29,13 +29,24 @@ const ShowModel = sequelize.define("showmodel", {
     },
 });
 
-ShowModel.belongsTo(EventModel);
 EventModel.hasMany(ShowModel, {
     foreignKey: "eventId",
+    as: "shows",
 });
-ShowModel.belongsTo(VenueModel);
+
+ShowModel.belongsTo(EventModel, {
+    foreignKey: "eventId",
+    as: "event",
+});
+
+ShowModel.belongsTo(VenueModel, {
+    foreignKey: "venueId",
+    as: "venue",
+});
+
 VenueModel.hasMany(ShowModel, {
-    foreignKey: "venuId",
+    foreignKey: "venueId",
+    as: "shows",
 });
 
 module.exports = ShowModel;

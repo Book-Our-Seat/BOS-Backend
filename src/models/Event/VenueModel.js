@@ -28,12 +28,9 @@ const VenueModel = sequelize.define("venuemodel", {
     pincode: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
+    }
     //TODO: this should contain layoutid -> pointing to a layout.
 });
-
-
-
 
 
 module.exports = VenueModel;

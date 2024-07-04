@@ -25,13 +25,9 @@ const OtpSessionModel = sequelize.define("otpsessionmodel", {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    isValid: {
+    isExpired: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
-    },
-    isVerified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
+        defaultValue: false,
     },
 });
 

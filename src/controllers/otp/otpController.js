@@ -8,7 +8,7 @@ const {
 const {
     otpRequestValidationMiddleware,
 } = require("../../middlewares/validationMiddleware");
-const OtpSessionModel = require("../../models/Otp/OtpSessionModel")
+const OtpSessionModel = require("../../models/Otp/OtpSessionModel");
 const generateAndSendOtp = require("../../services/otpService");
 const loginController = express.Router();
 const otpController = express.Router();
@@ -40,12 +40,33 @@ const validateOtpHandler = async (req, res, next) => {
         if (
             session &&
             session.emailOtp == emailOtp &&
-            session.phoneOtp == phoneOtp
+            session.phoneOtp == phoneOtp &&
+            !session.isExpired
         ) {
-            session.isVerified = true;
+            session.isExpired = true;
             await session.save();
+            
+            let user = await UserModel.findOne({
+                where: { email: session.email, phone: session.phone },
+            });
 
-            res.status(201).json({ message: "otps are valid!", sessionId });
+            if (!user) {
+                return res
+                    .status(404)
+                    .json({ message: "No matching user account found!" });
+            }
+
+            let accessToken = generateAccessToken(user);
+            let refreshToken = await generateRefreshToken(user);
+
+            res.status(201).json({
+                message: "Verified!",
+                userId: user.id,
+                name: user.name,
+                email: user.email,
+                accessToken,
+                refreshToken,
+            });
         } else {
             res.status(400).json({ message: "Invalid otp or session" });
         }
@@ -54,10 +75,4 @@ const validateOtpHandler = async (req, res, next) => {
     }
 };
 
-otpController.post(
-    "/generate-otp",
-    otpRequestValidationMiddleware,
-    generateOtpHandler
-);
-otpController.post("/validate-otp", validateOtpHandler);
-module.exports = loginController;
+module.exports = { generateOtpHandler, validateOtpHandler };

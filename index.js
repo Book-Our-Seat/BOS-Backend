@@ -8,10 +8,10 @@ const port = process.env.SERVER_PORT;
 const sequelize = require("./config/sequelizeConfig");
 const mainRouter = require("./src/routers/mainRouter")
 
+
 // app.use(express.static(path.join(__dirname, "frontend/build")));
 app.use(express.json());
-app.use("/api", mainRouter);
-
+app.use(mainRouter);
 
 
 const initApp = async () => {

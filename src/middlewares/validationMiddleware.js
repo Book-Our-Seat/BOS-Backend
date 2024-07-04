@@ -1,6 +1,6 @@
 const { body, validationResult } = require("express-validator");
 
-const signupStep1ValidationMiddleware = [
+const signupCreateAccountMiddleware = [
     body("phone").isMobilePhone().withMessage("Invalid phone number"),
     body("email").isEmail().withMessage("Invalid email address"),
     body("password")
@@ -30,6 +30,6 @@ const otpRequestValidationMiddleware = [
 ];
 
 module.exports = {
-    signupStep1ValidationMiddleware,
+    signupCreateAccountMiddleware,
     otpRequestValidationMiddleware
 };

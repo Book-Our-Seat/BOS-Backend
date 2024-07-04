@@ -11,6 +11,7 @@ const generateRefreshToken = async (user) => {
     const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET_KEY, {
         expiresIn: "7d",
     });
+
     await TokenModel.create({ token: refreshToken, userId: user.id });
     return refreshToken;
 };
@@ -30,8 +31,8 @@ const verifyRefreshToken = async (token) => {
     }
 };
 
-const revokeToken = async (token) => {
-    await TokenModel.destroy({ where: { token } });
+const revokeToken = async (refreshToken) => {
+    await TokenModel.destroy({ where: { refreshToken } });
 };
 
 module.exports = {
