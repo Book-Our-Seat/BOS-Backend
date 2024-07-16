@@ -35,7 +35,7 @@ const authorizeAdminMiddleware = async (req, res, next) => {
             return res.status(404).json({ message: "User not found!" });
         }
         console.log(user.role)
-        if (user.role == "admin") {
+        if (user.role != "admin") {
             return res.status(403).json({ message: "Not Authorized" });
         }
         req.user = user;

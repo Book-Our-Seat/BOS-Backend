@@ -1,7 +1,11 @@
 const { Model, DataTypes } = require("@sequelize/core");
-const sequelize = require("../../config/sequelizeConfig");
+const sequelize = require("../../config/config");
 const { v4: uuidv4 } = require("uuid");
+
 //TODO: use session instead!
+/**
+ * @deprecated 
+ */
 const ForgotPasswordSessionModel = sequelize.define("forgotpasswordsession", {
     id: {
         type: DataTypes.UUID,

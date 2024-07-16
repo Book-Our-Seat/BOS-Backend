@@ -21,29 +21,33 @@ const {
 } = require("../controllers/otp/otpController");
 const authRouter = express.Router();
 
-//FIXME: Move router code from controller to this place.
+
+
 authRouter.post(
     "/signup/create-account",
     signupCreateAccountMiddleware,
     signupCreateAccountHandler
 );
-
 authRouter.post(
     "/signup/more-details",
     authorizeUserMiddleware,
     signupMoreDetailsHandler
 );
 
+
 authRouter.post("/login", loginHandler);
 authRouter.post("/logout", authorizeUserMiddleware, logoutHandler )
+
+
+authRouter.post("/generate-otp", generateOtpHandler);
+authRouter.post("/validate-otp", validateOtpHandler);
+
+
 authRouter.post(
     "/reset-password",
     authorizeUserMiddleware,
     resetPasswordController
 );
-
-authRouter.post("/generate-otp", generateOtpHandler);
-authRouter.post("/validate-otp", validateOtpHandler);
 
 authRouter.post("/access-token", accessTokenHandler);
 

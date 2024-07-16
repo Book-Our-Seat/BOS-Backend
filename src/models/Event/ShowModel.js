@@ -1,8 +1,8 @@
 const { Model, DataTypes } = require("@sequelize/core");
-const sequelize = require("../../../config/sequelizeConfig");
+const sequelize = require("../../../config/config");
 const { v4: uuidv4 } = require("uuid");
 const EventModel = require("./EventModel");
-const VenueModel = require("./VenueModel");
+const VenueModel = require("../Venue/VenueModel");
 
 const ShowModel = sequelize.define("showmodel", {
     id: {

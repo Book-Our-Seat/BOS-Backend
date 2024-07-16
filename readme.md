@@ -15,3 +15,8 @@ Install and Run ```postgresql```
 
 #### Packages
 Token authentication ```json-web-token```
+Cron : ```node-cron```
+
+
+#### Seed the database
+Run ```node seeders/seed.js``` at the root of the project

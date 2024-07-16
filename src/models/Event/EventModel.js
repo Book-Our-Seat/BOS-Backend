@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require("@sequelize/core");
-const sequelize = require("../../../config/sequelizeConfig");
+const sequelize = require("../../../config/config");
 const { v4: uuidv4 } = require("uuid");
 
 const EventModel = sequelize.define("eventmodel", {

@@ -1,8 +1,8 @@
 const EventModel = require("../../models/Event/EventModel");
 const { v4: uuidv4 } = require("uuid");
 const ShowModel = require("../../models/Event/ShowModel");
-const sequelize = require("../../../config/sequelizeConfig");
-const VenueModel = require("../../models/Event/VenueModel");
+const sequelize = require("../../../config/config");
+const VenueModel = require("../../models/Venue/VenueModel");
 
 const createEventHandler = async (req, res, next) => {
     const {

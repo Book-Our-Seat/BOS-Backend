@@ -11,6 +11,7 @@ const loginHandler = async (req, res, next) => {
     const { email, password } = req.body;
     try {
         const user = await UserModel.findOne({ where: { email } });
+        console.log(email, password);   
         if (!user)
             return res
                 .status(404)
@@ -19,7 +20,7 @@ const loginHandler = async (req, res, next) => {
         const passwordIsValid = becrypt.compareSync(password, user.password);
         if (!passwordIsValid)
             return res
-                .status(401)
+                .status(404)
                 .json({ message: "Invalid email or password" });
 
         const accessToken = generateAccessToken(user);
