@@ -2,33 +2,26 @@ const { DataTypes } = require("@sequelize/core");
 const sequelize = require("../../../config/config");
 const { v4: uuidv4 } = require("uuid");
 
-const VenueModel = sequelize.define("venuemodel", {
+const VenueSeatModel = sequelize.define("venueseatmodel", {
     id: {
         type: DataTypes.UUID,
         defaultValue: uuidv4,
         primaryKey: true,
         allowNull: false,
     },
-    name: {
+    venueLayoutId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    seatNumber: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    addressLine1: {
-        type: DataTypes.STRING,
-    },
-    city: {
-        type: DataTypes.STRING,
+    // [row , column]
+    coordinates: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
         allowNull: false,
     },
-    state: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    pincode: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    }
 });
 
-
-module.exports = VenueModel;
+module.exports = VenueSeatModel;

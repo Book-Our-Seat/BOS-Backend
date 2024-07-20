@@ -14,6 +14,10 @@ const ShowSeatModel = sequelize.define("showseatmodel", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    coordinates: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        allowNull: false,
+    },
     status: {
         type: DataTypes.ENUM(Object.values(ShowSeatStatus)),
         defaultValue: ShowSeatStatus.AVAILABLE,
@@ -28,8 +32,11 @@ const ShowSeatModel = sequelize.define("showseatmodel", {
     },
     bookingId: {
         type: DataTypes.UUID,
-        allowNull: true 
-    }
+    },
+    showId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
 });
 
 module.exports = ShowSeatModel;

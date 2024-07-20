@@ -5,6 +5,8 @@ const EventModel = require("../models/Event/EventModel");
 const ShowModel = require("../models/Event/ShowModel");
 const UserModel = require("../models/UserModel");
 const VenueModel = require("../models/Venue/VenueModel");
+const VenueLayoutModel = require("../models/Venue/VenueLayoutModel");
+const VenueSeatModel = require("../models/Venue/VenueSeatModel");
 const { BookingStatus, ShowSeatStatus } = require("../utils/enums");
 const becrypt = require("bcryptjs");
 
@@ -50,6 +52,50 @@ const seed = async () => {
             },
         ]);
 
+        await VenueLayoutModel.create({
+            id: "c55c29a3-87d5-466d-90e9-035606ce4ed8",
+            venueId: "e4b2c3d4-5f6e-7a8b-9c1d-0e2f3b4c5d6a",
+            totalSeats: 5,
+            rowCount: 3,
+            columnCount: 3,
+            layout: "_a_|aaa|_a_",
+            rowLabels: ["A", "B", "C"],
+            columnLabels: ["1", "2", "3"],
+        });
+
+        await VenueSeatModel.bulkCreate([
+            {
+                id: "4beb5d0c-f2e9-470c-bc0e-1e86b2264c64",
+                venueLayoutId: "c55c29a3-87d5-466d-90e9-035606ce4ed8",
+                seatNumber: "A2",
+                coordinates: [1, 2],
+            },
+            {
+                id: "0ee79cd3-0af5-4b8b-8825-cce6d180f412",
+                venueLayoutId: "c55c29a3-87d5-466d-90e9-035606ce4ed8",
+                seatNumber: "B1",
+                coordinates: [2, 1],
+            },
+            {
+                id: "23022b76-e558-40d5-97fd-f6cce9b1d77a",
+                venueLayoutId: "c55c29a3-87d5-466d-90e9-035606ce4ed8",
+                seatNumber: "B2",
+                coordinates: [2, 2],
+            },
+            {
+                id: "1315f5cb-6c66-44ce-a3a1-311f412d046d",
+                venueLayoutId: "c55c29a3-87d5-466d-90e9-035606ce4ed8",
+                seatNumber: "B3",
+                coordinates: [2, 3],
+            },
+            {
+                id: "36c98b52-00df-4da8-b43b-1cc96541aa4d",
+                venueLayoutId: "c55c29a3-87d5-466d-90e9-035606ce4ed8",
+                seatNumber: "C2",
+                coordinates: [3, 2],
+            },
+        ]);
+
         await EventModel.bulkCreate([
             {
                 id: "8c1a2b3e-4d5f-6a7b-8c9d-0e1f2b3c4d5a",
@@ -79,7 +125,8 @@ const seed = async () => {
             {
                 id: "2b43d769-d3fb-4a9b-89df-6b8bcf96039f",
                 showId: "2b43d769-d3fb-4a9b-89df-6b8bcf96039f",
-                seatNumber: "A1",
+                seatNumber: "A2",
+                coordinates: [1, 2],
                 status: ShowSeatStatus.AVAILABLE,
                 category: "VIP",
                 price: 100,
@@ -90,7 +137,8 @@ const seed = async () => {
             {
                 id: "4a4eb814-f456-46f1-9173-6b5c897b0eb8",
                 showId: "2b43d769-d3fb-4a9b-89df-6b8bcf96039f",
-                seatNumber: "A2",
+                seatNumber: "B1",
+                coordinates: [2, 1],
                 status: ShowSeatStatus.AVAILABLE,
                 category: "VIP",
                 price: 100,
