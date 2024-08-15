@@ -31,6 +31,14 @@ const UserModel = sequelize.define("User", {
     role: {
         type: DataTypes.ENUM(['admin', 'user']), //TODO: Add a command to create admin user in db.
         defaultValue: 'user'
+    },
+    approvalStatus: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    coins:{
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 });
 

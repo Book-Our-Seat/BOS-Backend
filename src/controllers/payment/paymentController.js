@@ -38,7 +38,6 @@ const bookSeats = async (seatNums, transaction) => {
 
 const freeSeats = async (seatNums, transaction) => {
 
-
     await ShowSeatModel.update(
         { status: ShowSeatStatus.AVAILABLE },
         { where: { seatNumber: { [Op.in]: seatNums } } },

@@ -9,7 +9,7 @@ const signupCreateAccountMiddleware = [
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            let message = Array(errors).join(",");
+            let message = errors.errors[0].msg;
             return res.status(400).json({ message });
         }
         next();
@@ -22,7 +22,7 @@ const otpRequestValidationMiddleware = [
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            let message = Array(errors).join(",");
+            let message = errors.errors[0].msg;
             return res.status(400).json({ message });
         }
         next();
