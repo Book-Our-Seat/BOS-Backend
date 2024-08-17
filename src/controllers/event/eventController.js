@@ -5,6 +5,8 @@ const sequelize = require("../../../config/config");
 const VenueModel = require("../../models/Venue/VenueModel");
 const ShowSeatModel = require("../../models/Booking/ShowSeatModel");
 const VenueLayoutModel = require("../../models/Venue/VenueLayoutModel");
+const { default: Sequelize } = require("@sequelize/core");
+const BookingModel = require("../../models/Booking/BookingModel");
 
 const createEventHandler = async (req, res, next) => {
     const {
@@ -83,7 +85,7 @@ const getAllEventsHandler = async (req, res, next) => {
             include: [
                 {
                     model: ShowModel,
-                    attributes: ["id", "startTime", "date"],
+                    attributes: ["id", "startTime", "date", "bookingCount"],
                     separate: true,
                     include: [
                         {
@@ -95,6 +97,7 @@ const getAllEventsHandler = async (req, res, next) => {
                 },
             ],
         });
+
         res.status(200).json({ events });
     } catch (error) {
         next(error);

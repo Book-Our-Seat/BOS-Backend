@@ -44,15 +44,15 @@ const BookingModel = sequelize.define("BookingModel", {
     },
     status: {
         type: DataTypes.ENUM(Object.values(BookingStatus)),
-        defaultValue: BookingStatus.INVALID
+        defaultValue: BookingStatus.INVALID,
     },
     statusMessage: {
         type: DataTypes.STRING,
     },
     _expiresAt: {
         type: DataTypes.DATE,
-        allowNull: false
-    }
+        allowNull: false,
+    },
 });
 
 // Associations
@@ -75,8 +75,5 @@ PaymentModel.belongsTo(BookingModel, {
     foreignKey: "bookingId",
     as: "booking",
 });
-
-
-
 
 module.exports = BookingModel;

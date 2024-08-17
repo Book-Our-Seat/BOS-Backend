@@ -45,8 +45,26 @@ const updateCoinsHandler = async (req, res, next) => {
     }
 };
 
+const updateUserInfoHandler = async (req, res, next) => {
+    try {
+        let { userInfo } = req.body;
+        const user = await UserModel.findOne({ where: { id: userInfo.id } });
+        if (!user) {
+            return res.status(404).json({ message: "User Not Found!" });
+        }
+        user.coins = userInfo.coins;
+        user.approvalStatus = userInfo.approvalStatus;
+        await user.save();
+        res.status(201).json({ message: "Updated Successfully!" });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
 module.exports = {
     getUsersHandler,
     approveUserHandler,
-    updateCoinsHandler
+    updateCoinsHandler,
+    updateUserInfoHandler
 };

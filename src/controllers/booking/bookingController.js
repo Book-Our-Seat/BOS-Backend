@@ -13,6 +13,7 @@ const {
     ShowSeatStatus,
 } = require("../../utils/enums");
 const { initiatePayment } = require("../../services/paymentService");
+const UserModel = require("../../models/UserModel");
 
 //TODO: move this into .env
 const EXPIRY_DURATION_MILLIS = 15 * 60000;
@@ -163,6 +164,14 @@ const createBookingHandler = async (req, res, next) => {
     const transaction = await sequelize.startUnmanagedTransaction();
     let locked = false;
     try {
+        /* Check for existence of show.
+            const show = await ShowModel.findOne({
+                where: { id: showId },
+            });
+            if (!show) {
+                return res.status(404).json({ message: "No such show exists!" });
+            }
+        */
         let seats = await ShowSeatModel.findAll({
             where: {
                 id: {
@@ -173,17 +182,32 @@ const createBookingHandler = async (req, res, next) => {
         });
 
         let amount = getTotalPrice(seats);
+        let userBalance = (
+            await UserModel.findOne({
+                where: { id: user.id },
+                attributes: ["coins"],
+            })
+        ).coins;
 
         // check if any of them is booked
+        if (userBalance < amount) {
+            return res.status(409).json({ message: "Insufficient coins!" });
+        }
+
         if (!checkIfAllSeatsAreAvailable(seats)) {
             return res.status(409).json({ message: "Seats unavailable!" });
         }
 
         await ShowSeatModel.update(
-            { status: ShowSeatStatus.UNAVAILABLE },
+            { status: ShowSeatStatus.SOLD },
             { where: { id: { [Op.in]: showSeatIds } } }
         );
-        locked = true;
+
+        await UserModel.update(
+            { coins: userBalance - amount },
+            { where: { id: user.id } }
+        );
+        // locked = true;
 
         const booking = await BookingModel.create(
             {
@@ -191,8 +215,8 @@ const createBookingHandler = async (req, res, next) => {
                 eventId: eventId,
                 showId: showId,
                 seats: getSeatNumsConcatenated(seats),
-                status: BookingStatus.PENDING,
-                statusMessage: "Booking initiated",
+                status: BookingStatus.BOOKED,
+                statusMessage: "Booked",
                 _expiresAt: getExpiry(),
             },
             { transaction }
@@ -204,27 +228,33 @@ const createBookingHandler = async (req, res, next) => {
                 userId: user.id,
                 amount,
                 timeStamp: new Date().getTime(),
-                paymentMethod: "UPI",
-                status: PaymentStatus.INVALID,
+                paymentMethod: "Coins",
+                status: PaymentStatus.SUCCESS,
             },
             { transaction }
         );
 
-        const paymentResponse = await initiatePayment(user.id, amount);
-
-        payment.transactionId = paymentResponse.paymentId;
-        payment.status = paymentResponse.status;
-
-        await payment.save({ transaction });
+        /* Initiate Payment Gateway 
+            const paymentResponse = await initiatePayment(user.id, amount);
+            payment.transactionId = paymentResponse.paymentId || "invl";
+            payment.status = paymentResponse.status;
+            await payment.save({ transaction });
+         */
+        await ShowModel.increment("bookingCount", {
+            by: 1,
+            where: { id: showId },
+            transaction,
+        });
 
         await transaction.commit();
 
         res.status(201).json({
-            message: "Booking Initiated",
+            message: "Booking Successful!",
             bookingId: booking.id,
             paymentId: payment.id,
         });
     } catch (error) {
+        /* Unlock locked seats
         if (locked) {
             await ShowSeatModel.update(
                 { status: ShowSeatStatus.AVAILABLE },
@@ -232,6 +262,7 @@ const createBookingHandler = async (req, res, next) => {
             );
             locked = false;
         }
+*/
         await transaction.rollback();
         next(error);
     }

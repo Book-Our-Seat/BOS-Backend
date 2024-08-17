@@ -27,6 +27,10 @@ const ShowModel = sequelize.define("showmodel", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    bookingCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+    },
 });
 
 EventModel.hasMany(ShowModel, {

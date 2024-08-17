@@ -4,14 +4,14 @@ const {
     getUsersHandler,
     approveUserHandler,
     updateCoinsHandler,
+    updateUserInfoHandler
 } = require("../controllers/admin/adminController");
 
 const adminRouter = express.Router();
 
-adminRouter.post("/users/coins", authorizeAdminMiddleware, updateCoinsHandler);
-
-adminRouter.post("/approve", authorizeAdminMiddleware, approveUserHandler);
-
+adminRouter.post("/users/update", authorizeAdminMiddleware, updateUserInfoHandler);
 adminRouter.get("/users", authorizeAdminMiddleware, getUsersHandler);
+
+
 
 module.exports = adminRouter;
