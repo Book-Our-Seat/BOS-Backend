@@ -14,6 +14,7 @@ const {
 } = require("../../utils/enums");
 const { initiatePayment } = require("../../services/paymentService");
 const UserModel = require("../../models/UserModel");
+const { generateQRCode } = require("../../utils/qrcode");
 
 //TODO: move this into .env
 const EXPIRY_DURATION_MILLIS = 15 * 60000;
@@ -23,7 +24,7 @@ const getAllBookingsHandler = async (req, res, next) => {
     try {
         let bookings = await BookingModel.findAll({
             where: { userId: user.id },
-            attributes: ["id", "status", "seats"],
+            attributes: ["id", "status", "seats", "qrCode"],
             include: [
                 {
                     model: ShowModel,
@@ -75,7 +76,7 @@ const getOneBookingHandler = async (req, res, next) => {
     try {
         let booking = await BookingModel.findOne({
             where: { userId: user.id, id },
-            attributes: ["id", "status", "seats"],
+            attributes: ["id", "status", "seats", "qrCode"],
             include: [
                 {
                     model: ShowModel,
@@ -209,13 +210,18 @@ const createBookingHandler = async (req, res, next) => {
         );
         // locked = true;
 
+        const bookingId = uuidv4();
+        const qrCode = await generateQRCode(bookingId);
+
         const booking = await BookingModel.create(
             {
+                id: bookingId,
                 userId: user.id,
                 eventId: eventId,
                 showId: showId,
                 seats: getSeatNumsConcatenated(seats),
                 status: BookingStatus.BOOKED,
+                qrCode,
                 statusMessage: "Booked",
                 _expiresAt: getExpiry(),
             },
@@ -251,6 +257,7 @@ const createBookingHandler = async (req, res, next) => {
         res.status(201).json({
             message: "Booking Successful!",
             bookingId: booking.id,
+            qrCode,
             paymentId: payment.id,
         });
     } catch (error) {

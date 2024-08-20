@@ -1,4 +1,6 @@
+const BookingModel = require("../../models/Booking/BookingModel");
 const UserModel = require("../../models/UserModel");
+const { BookingStatus } = require("../../utils/enums");
 
 const getUsersHandler = async (req, res, next) => {
     try {
@@ -7,38 +9,6 @@ const getUsersHandler = async (req, res, next) => {
             attributes: ["id", "name", "email", "approvalStatus", "coins"],
         });
         res.status(200).json({ users });
-    } catch (error) {
-        console.log(error);
-        next(error);
-    }
-};
-
-const approveUserHandler = async (req, res, next) => {
-    const { id } = req.body;
-    try {
-        const user = await UserModel.findOne({ where: { id } });
-        if (!user) {
-            return res.status(404).json({ message: "User Not Found!" });
-        }
-        user.approvalStatus = true;
-        await user.save();
-        res.status(201).json({ message: "Approval Successful!" });
-    } catch (error) {
-        console.log(error);
-        next(error);
-    }
-};
-
-const updateCoinsHandler = async (req, res, next) => {
-    const { id, updatedCoins } = req.body;
-    try {
-        const user = await UserModel.findOne({ where: { id } });
-        if (!user) {
-            return res.status(404).json({ message: "User Not Found!" });
-        }
-        user.coins += updatedCoins;
-        await user.save();
-        res.status(201).json({ message: "Coins Updated Successfully!" });
     } catch (error) {
         console.log(error);
         next(error);
@@ -62,9 +32,32 @@ const updateUserInfoHandler = async (req, res, next) => {
     }
 };
 
+const verifyBookingHandler = async (req, res, next) => {
+    try {
+        let { bookingId } = req.body;
+        const booking = await BookingModel.findOne({
+            where: { id: bookingId },
+        });
+        if (!booking) {
+            return res.status(404).json({ message: "No booking found!" });
+        }
+        if (booking.status == BookingStatus.BOOKED) {
+            booking.status = BookingStatus.FINISHED;
+            booking.statusMessage = "Hope you liked the show!";
+            await booking.save();
+            return res
+                .status(201)
+                .json({ message: "Verification successful!" });
+        }
+        return res.status(409).json({ message: "Verification unsuccessful!" });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
 module.exports = {
     getUsersHandler,
-    approveUserHandler,
-    updateCoinsHandler,
-    updateUserInfoHandler
+    updateUserInfoHandler,
+    verifyBookingHandler
 };

@@ -40,7 +40,7 @@ const BookingModel = sequelize.define("BookingModel", {
         defaultValue: [],
     },
     qrCode: {
-        type: DataTypes.BLOB,
+        type: DataTypes.TEXT,
     },
     status: {
         type: DataTypes.ENUM(Object.values(BookingStatus)),
