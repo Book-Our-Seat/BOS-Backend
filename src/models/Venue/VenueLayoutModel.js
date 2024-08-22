@@ -33,7 +33,7 @@ const VenueLayoutModel = sequelize.define("venuelayoutmodel", {
      * The grid is serialized into a single string in a row major fashion.
      */
     layout: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     /*
