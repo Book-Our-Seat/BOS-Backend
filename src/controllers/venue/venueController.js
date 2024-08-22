@@ -62,10 +62,18 @@ const getVenueHandler = async (req, res, next) => {
             include: [
                 {
                     model: VenueLayoutModel,
-                    attributes: { exclude: ["venueId", "createdAt", "updatedAt"] },
+                    attributes: {
+                        exclude: ["venueId", "createdAt", "updatedAt"],
+                    },
                     include: {
                         model: VenueSeatModel,
-                        attributes: { exclude: ["venueLayoutId", "createdAt", "updatedAt"] },
+                        attributes: {
+                            exclude: [
+                                "venueLayoutId",
+                                "createdAt",
+                                "updatedAt",
+                            ],
+                        },
                         separate: true,
                     },
                 },
@@ -81,4 +89,34 @@ const getVenueHandler = async (req, res, next) => {
     }
 };
 
-module.exports = { createVenueHandler, getVenueHandler };
+const getAllVenuesHandler = async (req, res, next) => {
+    try {
+        let venues = await VenueModel.findAll({
+            include: [
+                {
+                    model: VenueLayoutModel,
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"],
+                    },
+                    include: {
+                        model: VenueSeatModel,
+                        attributes: {
+                            exclude: [
+                                "venueLayoutId",
+                                "createdAt",
+                                "updatedAt",
+                            ],
+                        },
+                        separate: true,
+                    },
+                },
+            ],
+        });
+
+        res.status(200).json({ venues });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { createVenueHandler, getVenueHandler, getAllVenuesHandler };
