@@ -6,6 +6,7 @@ require("dotenv").config();
 const app = express();
 const path = require("path");
 
+app.use(express.json({ limit: '10mb' }));
 const port = process.env.SERVER_PORT;
 
 const sequelize = require("./config/config");
