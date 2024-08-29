@@ -4,12 +4,41 @@ const VenueModel = require("../../models/Venue/VenueModel");
 const VenueLayoutModel = require("../../models/Venue/VenueLayoutModel");
 const VenueSeatModel = require("../../models/Venue/VenueSeatModel");
 
+const checkIfAllLayoutDetailsAreProvided = (layoutDetails) => {
+    if (!layoutDetails.totalSeats) {
+        return [false, "`seats` are required!"];
+    }
+    if (!layoutDetails.rowLabels) {
+        return [false, "`rowLabels are required!"];
+    }
+    if (!layoutDetails.rowCount) {
+        return [false, "`rowCount` is required!"];
+    }
+    if (!layoutDetails.columnCount) {
+        return [false, "`columnCount` is required!"];
+    }
+    if (!layoutDetails.layout) {
+        return [false, "`layout(string)` is required!"];
+    }
+    return [true, ""]
+};
 // layout has seat numbers as well.
 // TODO: Handling cases were layout is not provided!
 const createVenueHandler = async (req, res, next) => {
     let { name, layoutDetails, addressLine1, city, state, pincode } = req.body;
+
+    let [isAllLayoutDetailsProvided, message] =
+        checkIfAllLayoutDetailsAreProvided(layoutDetails);
+
+    if (!isAllLayoutDetailsProvided) {
+        return res
+            .status(400)
+            .json({ message: `Missing in VenueLayout: ${message}` });
+    }
+
     const transaction = await sequelize.startUnmanagedTransaction();
     try {
+        // create venue
         // create layout
         let venue = await VenueModel.create(
             {
