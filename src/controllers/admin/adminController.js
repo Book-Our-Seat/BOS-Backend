@@ -38,18 +38,31 @@ const verifyBookingHandler = async (req, res, next) => {
         const booking = await BookingModel.findOne({
             where: { id: bookingId },
         });
+
         if (!booking) {
-            return res.status(404).json({ message: "No booking found!" });
+            return res
+                .status(404)
+                .json({ message: "No booking found!", booking: {} });
         }
+
         if (booking.status == BookingStatus.BOOKED) {
             booking.status = BookingStatus.FINISHED;
             booking.statusMessage = "Hope you liked the show!";
             await booking.save();
-            return res
-                .status(201)
-                .json({ message: "Verification successful!" });
+            return res.status(201).json({
+                message: "Verification successful!",
+                booking: {
+                    id: booking.id,
+                    userId: booking.userId,
+                    showId: booking.showId,
+                    seats: booking.seats,
+                },
+            });
         }
-        return res.status(409).json({ message: "Verification unsuccessful!" });
+        return res.status(409).json({
+            message: "Verification unsuccessful!",
+            booking: {},
+        });
     } catch (error) {
         console.log(error);
         next(error);
@@ -59,5 +72,5 @@ const verifyBookingHandler = async (req, res, next) => {
 module.exports = {
     getUsersHandler,
     updateUserInfoHandler,
-    verifyBookingHandler
+    verifyBookingHandler,
 };
