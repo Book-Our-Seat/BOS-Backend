@@ -21,4 +21,10 @@ const ShowSeatStatus = Object.freeze({
     "SOLD": "Sold"
 })
 
-module.exports = {BookingStatus, PaymentStatus, ShowSeatStatus}
+const ShowSeatCategory = Object.freeze({
+    "VIP": "Vip",
+    "GENERAL": "General",
+    "DELUXE": "Deluxe"
+})
+
+module.exports = {BookingStatus, PaymentStatus, ShowSeatStatus, ShowSeatCategory}

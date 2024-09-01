@@ -7,7 +7,7 @@ const ShowSeatModel = require("../../models/Booking/ShowSeatModel");
 const VenueLayoutModel = require("../../models/Venue/VenueLayoutModel");
 const { default: Sequelize } = require("@sequelize/core");
 const BookingModel = require("../../models/Booking/BookingModel");
-const { saveImage, getImage } = require("../../utils/image");
+const {saveS3Image } = require("../../utils/imageUtils");
 
 const createEventHandler = async (req, res, next) => {
     const {
@@ -21,16 +21,15 @@ const createEventHandler = async (req, res, next) => {
         category,
         shows,
     } = req.body;
-    let posterLink = null;
-    let artistImageLink = null
+    let posterLink = null,
+        artistImageLink = null;
 
     if (posterImage) {
-        posterLink = saveImage(posterImage, "event-poster-");
+        posterLink = await saveS3Image(posterImage, "event-poster-");
     }
-    if(artistImage) {
-        artistImageLink = saveImage(artistImage, "artist-image-")
+    if (artistImage) {
+        artistImageLink = await saveS3Image(artistImage, "artist-image-");
     }
-
 
     sequelize.transaction(async (transaction) => {
         try {
@@ -63,7 +62,7 @@ const createEventHandler = async (req, res, next) => {
             shows.forEach((show, index) => {
                 showSeatsSet.push(
                     show.showSeats.map((seat) => {
-                        console.log(seat.category, seat.status)
+                        console.log(seat.category, seat.status);
                         return {
                             id: uuidv4(),
                             seatNumber: seat.seatNumber,
@@ -112,12 +111,6 @@ const getAllEventsHandler = async (req, res, next) => {
             ],
         });
 
-        events = events.map((event) => {
-            const plainEvent = event.get({ plain: true });
-            // plainEvent.posterImage = getImage(plainEvent.posterLink);
-            return plainEvent;
-        });
-
         res.status(200).json({ events });
     } catch (error) {
         next(error);
@@ -146,11 +139,6 @@ const getEventHandler = async (req, res, next) => {
                 ],
             }
         );
-        events = events.map((event) => {
-            const plainEvent = event.get({ plain: true });
-            plainEvent.posterImage = getImage(plainEvent.posterLink);
-            return plainEvent;
-        });
         res.status(200).json({ events });
     } catch (error) {
         next(error);
