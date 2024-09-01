@@ -17,7 +17,7 @@ const accessTokenHandler = async (req, res, next) => {
     });
 
     if (!savedToken) {
-        return res.status(401).json({ message: "Invalid token!" });
+        return res.status(401).json({ message: "Invalid refresh token!" });
     }
 
     try {

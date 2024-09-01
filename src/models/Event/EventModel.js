@@ -21,6 +21,10 @@ const EventModel = sequelize.define("eventmodel", {
         type: DataTypes.STRING, //FIXME: can itself be a class
         allowNull: true,
     },
+    artistImageLink:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     duration: {
         type: DataTypes.STRING, //TODO: Change this to int or other type based on frontend
         allowNull: false,
