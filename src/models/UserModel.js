@@ -32,6 +32,24 @@ const UserModel = sequelize.define("User", {
     address: {
         type: DataTypes.STRING,
     },
+    city: {
+        type: DataTypes.STRING,
+    },
+    state: { 
+        type: DataTypes.STRING
+    },
+    pincode: {
+        type: DataTypes.STRING,
+    },
+    emergencyContactPersonName: {
+        type: DataTypes.STRING,
+    },
+    emergencyContactPersonNumber: {
+        type: DataTypes.STRING,
+    },
+    bloodGroup: {
+        type: DataTypes.STRING,
+    },
     role: {
         type: DataTypes.ENUM(['admin', 'user']), //TODO: Add a command to create admin user in db.
         defaultValue: 'user'

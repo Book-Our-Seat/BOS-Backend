@@ -16,6 +16,12 @@ const getUserInfoHandler = async (req, res, next) => {
                 "email",
                 "address",
                 "profileImage",
+                "city",
+                "state",
+                "pincode",
+                "emergencyContactPersonNumber",
+                "emergencyContactPersonName",
+                "bloodGroup"
             ],
         });
         if (!userInfo) {
@@ -44,6 +50,9 @@ const updateUserInfoHandler = async (req, res, next) => {
         user.city = userInfo.city;
         user.state = userInfo.state;
         user.pincode = userInfo.pincode;
+        user.emergencyContactPersonNumber = userInfo.emergencyContactPersonNumber;
+        user.emergencyContactPersonName = userInfo.emergencyContactPersonName;
+        user.bloodGroup = userInfo.bloodGroup;
 
         if(userInfo.profileImage) {
             user.profileImage = await saveS3Image(userInfo.profileImage);
