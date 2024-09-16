@@ -9,6 +9,7 @@ const getUserInfoHandler = async (req, res, next) => {
             attributes: [
                 "id",
                 "name",
+                "lastName",
                 "email",
                 "approvalStatus",
                 "coins",
@@ -45,6 +46,7 @@ const updateUserInfoHandler = async (req, res, next) => {
             return res.status(404).json({ message: "No user found!" });
         }
         user.name = userInfo.name;
+        user.lastName = userInfo.lastName;
         user.email = userInfo.email;
         user.address = userInfo.address;
         user.city = userInfo.city;
