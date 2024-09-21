@@ -60,7 +60,7 @@ const updateUserInfoHandler = async (req, res, next) => {
             user.profileImage = await saveS3Image(userInfo.profileImage);
         }
         await user.save();
-        res.status(201).json({ message: "Success" });
+        res.status(201).json({ userDetails: user, message: "Success" });
     } catch (error) {
         console.log(error);
         next(error);
