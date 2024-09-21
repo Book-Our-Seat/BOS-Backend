@@ -24,7 +24,7 @@ const getAllBookingsHandler = async (req, res, next) => {
     try {
         let bookings = await BookingModel.findAll({
             where: { userId: user.id },
-            attributes: ["id", "status", "seats", "qrCode"],
+            attributes: ["id", "status", "seats", "qrCode", "seatCategories"],
             include: [
                 {
                     model: ShowModel,
@@ -76,7 +76,7 @@ const getOneBookingHandler = async (req, res, next) => {
     try {
         let booking = await BookingModel.findOne({
             where: { userId: user.id, id },
-            attributes: ["id", "status", "seats", "qrCode"],
+            attributes: ["id", "status", "seats", "qrCode", "seatCategories"],
             include: [
                 {
                     model: ShowModel,
@@ -147,6 +147,21 @@ const getSeatNumsConcatenated = (showSeats) => {
     return showSeats.map((seat) => seat.seatNumber);
 };
 
+const getSeatCategoriesConcatenated = (showSeats) => {
+    let categoryMap = new Map();
+    showSeats.forEach((seat) => {
+        categoryMap.set(
+            seat.category,
+            (categoryMap.get(seat.seatNumber) ?? 0) + 1
+        );
+    });
+    let str = [];
+    categoryMap.forEach((value, key) => {
+        str.push(key + "-" + value);
+    });
+    return str;
+};
+
 const getExpiry = () => {
     return new Date(new Date().getTime() + EXPIRY_DURATION_MILLIS);
 };
@@ -179,7 +194,7 @@ const createBookingHandler = async (req, res, next) => {
                     [Op.in]: showSeatIds,
                 },
             },
-            attributes: ["status", "price", "seatNumber"],
+            attributes: ["status", "price", "seatNumber", "category"],
         });
 
         let amount = getTotalPrice(seats);
@@ -201,12 +216,14 @@ const createBookingHandler = async (req, res, next) => {
 
         await ShowSeatModel.update(
             { status: ShowSeatStatus.SOLD },
-            { where: { id: { [Op.in]: showSeatIds } } }
+            { where: { id: { [Op.in]: showSeatIds } } },
+            { transaction }
         );
 
         await UserModel.update(
             { coins: userBalance - amount },
-            { where: { id: user.id } }
+            { where: { id: user.id } },
+            { transaction }
         );
         // locked = true;
 
@@ -220,6 +237,7 @@ const createBookingHandler = async (req, res, next) => {
                 eventId: eventId,
                 showId: showId,
                 seats: getSeatNumsConcatenated(seats),
+                seatCategories: getSeatCategoriesConcatenated(seats),
                 status: BookingStatus.BOOKED,
                 qrCode,
                 statusMessage: "Booked",

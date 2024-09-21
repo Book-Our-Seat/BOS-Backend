@@ -31,6 +31,10 @@ const ShowModel = sequelize.define("showmodel", {
         type: DataTypes.INTEGER,
         defaultValue: 0,
     },
+    noSeatLayout: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    }
 });
 
 EventModel.hasMany(ShowModel, {

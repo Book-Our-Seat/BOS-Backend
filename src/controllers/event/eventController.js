@@ -54,6 +54,7 @@ const createEventHandler = async (req, res, next) => {
                     eventId: event.id,
                     startTime: show.startTime,
                     date: show.date,
+                    noSeatLayout: show.noSeatLayout ?? false
                 };
             });
 
@@ -180,6 +181,7 @@ const getEventLayoutHandler = async (req, res, next) => {
 
         res.status(200).json({
             showId: show.id,
+            noSeatLayout: show.noSeatLayout,
             showVenueLayout: show.venue.venueLayout,
             showSeats,
         });

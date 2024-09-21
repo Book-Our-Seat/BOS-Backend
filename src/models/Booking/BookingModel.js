@@ -39,6 +39,10 @@ const BookingModel = sequelize.define("BookingModel", {
         type: DataTypes.ARRAY(DataTypes.STRING),
         defaultValue: [],
     },
+    seatCategories: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: [],
+    },
     qrCode: {
         type: DataTypes.TEXT,
     },
