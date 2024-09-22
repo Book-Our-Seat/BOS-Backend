@@ -25,12 +25,13 @@ const signupCreateAccountHandler = async (req, res, next) => {
     const { name, phone, email, password } = req.body;
 
     try {
+        email = email.toLowerCase();
         let { isTaken, msg } = isAlreadyTaken(phone, email);
 
         if (isTaken) {
             return res.status(400).json({ message: msg });
         }
-
+        
         await UserModel.create({
             name,
             phone,
