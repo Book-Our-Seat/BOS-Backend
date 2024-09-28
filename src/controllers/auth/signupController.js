@@ -22,12 +22,11 @@ const isAlreadyTaken = async (phone, email) => {
 };
 
 const signupCreateAccountHandler = async (req, res, next) => {
-    const { name, phone, email, password } = req.body;
+    let { name, phone, email, password } = req.body;
 
     try {
         email = email.toLowerCase();
-        let { isTaken, msg } = isAlreadyTaken(phone, email);
-
+        let { isTaken, msg } = await isAlreadyTaken(phone, email);
         if (isTaken) {
             return res.status(400).json({ message: msg });
         }
