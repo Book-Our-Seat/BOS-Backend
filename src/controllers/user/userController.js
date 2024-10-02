@@ -5,7 +5,7 @@ const getUserInfoHandler = async (req, res, next) => {
     const user = req.user;
     try {
         let userInfo = await UserModel.findOne({
-            where: { role: "user", id: user.id },
+            where: { id: user.id },
             attributes: [
                 "id",
                 "name",
@@ -22,7 +22,8 @@ const getUserInfoHandler = async (req, res, next) => {
                 "pincode",
                 "emergencyContactPersonNumber",
                 "emergencyContactPersonName",
-                "bloodGroup"
+                "bloodGroup",
+                "role"
             ],
         });
         if (!userInfo) {
